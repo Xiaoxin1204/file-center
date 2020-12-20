@@ -18,7 +18,7 @@ const data = [
   },
   {
     path: '/personnelManagement',
-    component: 'Layout',
+    component: 'Layout1',
     redirect: 'noRedirect',
     name: 'PersonnelManagement',
     meta: { title: '人员', icon: 'users-cog', permissions: ['admin'] },

@@ -1,30 +1,43 @@
 <template>
   <div class="goods-list-container">
-    <vab-query-form>
-      <vab-query-form-right-panel :span="24">
-        <el-form
-          ref="form"
-          :model="queryForm"
-          :inline="true"
-          @submit.native.prevent
-        >
-          <el-form-item>
-            <el-input v-model="queryForm.title" placeholder="商品名称" />
-          </el-form-item>
-          <el-form-item>
-            <el-button
-              icon="el-icon-search"
-              type="primary"
-              native-type="submit"
-              @click="handleQuery"
-            >
-              查询
-            </el-button>
-          </el-form-item>
-        </el-form>
-      </vab-query-form-right-panel>
-    </vab-query-form>
-    <Card />
+    <div>
+      <div class="card-container">
+        <el-row :gutter="20">
+          <el-col
+            v-for="(item, index) in list"
+            :key="index"
+            :xs="24"
+            :sm="8"
+            :md="8"
+            :lg="8"
+            :xl="4"
+          >
+            <el-card shadow="hover">
+              <div slot="header">
+                <span>{{ item.title }}</span>
+              </div>
+              <div style="width: 100%; height: 200px">
+                <vab-image
+                  :big-src="item.img"
+                  :percent="item.percent"
+                  :small-src="item.smallImg"
+                  :file-type="item.fileType"
+                  @clickBig="bigClick(item)"
+                  @clickSmall="smallClick(item)"
+                  @showData="showData(item)"
+                ></vab-image>
+              </div>
+              <el-progress
+                :text-inside="true"
+                :stroke-width="8"
+                :percentage="70"
+                :show-text="false"
+              ></el-progress>
+            </el-card>
+          </el-col>
+        </el-row>
+      </div>
+    </div>
     <el-pagination
       background
       :current-page="queryForm.pageNo"
@@ -38,12 +51,16 @@
 </template>
 
 <script>
-  import { getList } from '@/api/goodsList'
+  // import { getList } from '@/api/goodsList'
   import Card from '../../vab/card/index'
+  import { getList } from '@/api/table'
+  import VabImage from '@/components/VabImage'
 
   export default {
     name: 'Goods',
-    components: { Card },
+    components: {
+      VabImage,
+    },
     data() {
       return {
         queryForm: {
@@ -56,12 +73,36 @@
         layout: 'total, sizes, prev, pager, next, jumper',
         total: 0,
         elementLoadingText: '正在加载...',
+
+        value: true,
+        currentDate: new Date(),
+        // list: null,
+        // listLoading: true,
+        pageNo: 1,
+        pageSize: 10,
+        // layout: 'total, sizes, prev, pager, next, jumper',
+        // total: 0,
+        background: true,
+        height: 0,
+        // elementLoadingText: '正在加载...',
+        dialogFormVisible: false,
       }
     },
     created() {
       this.fetchData()
+      this.height = this.$baseTableHeight(1)
     },
     methods: {
+      bigClick(val) {
+        console.log('11')
+        this.$baseAlert('点击了大图')
+      },
+      smallClick(val) {
+        this.$baseAlert('点击了小图')
+      },
+      showData(val) {
+        this.$baseAlert('123')
+      },
       handleSizeChange(val) {
         this.queryForm.pageSize = val
         this.fetchData()
@@ -85,6 +126,14 @@
 </script>
 <style lang="scss" scoped>
   .goods-list-container {
+    ::v-deep {
+      .el-card__header {
+        text-align: center;
+      }
+      .el-card__body {
+        padding: 15px 20px 40px;
+      }
+    }
     .goods-list-card-body {
       position: relative;
       text-align: center;

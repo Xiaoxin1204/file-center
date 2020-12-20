@@ -19,22 +19,21 @@
               :big-src="item.img"
               :percent="item.percent"
               :small-src="item.smallImg"
+              :file-type="item.fileType"
               @clickBig="bigClick(item)"
               @clickSmall="smallClick(item)"
+              @showData="showData(item)"
             ></vab-image>
           </div>
+          <el-progress
+            :text-inside="true"
+            :stroke-width="8"
+            :percentage="70"
+            :show-text="false"
+          ></el-progress>
         </el-card>
       </el-col>
     </el-row>
-    <el-pagination
-      :background="background"
-      :current-page="pageNo"
-      :layout="layout"
-      :page-size="pageSize"
-      :total="total"
-      @current-change="handleCurrentChange"
-      @size-change="handleSizeChange"
-    ></el-pagination>
   </div>
 </template>
 
@@ -69,10 +68,14 @@
     },
     methods: {
       bigClick(val) {
+        console.log('11')
         this.$baseAlert('点击了大图')
       },
       smallClick(val) {
         this.$baseAlert('点击了小图')
+      },
+      showData(val) {
+        this.$baseAlert('123')
       },
       handleSizeChange(val) {
         this.pageSize = val
@@ -97,3 +100,14 @@
     },
   }
 </script>
+
+<style lang="scss" scoped>
+  ::v-deep {
+    .el-card__header {
+      text-align: center;
+    }
+    .el-card__body {
+      padding: 15px 20px 40px;
+    }
+  }
+</style>

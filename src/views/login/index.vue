@@ -1,73 +1,69 @@
 <template>
   <div class="login-container">
-    <el-alert
-      title="beautiful boys and girls欢迎加入vue-admin-beautifulQQ群：972435319"
-      type="success"
-      :closable="false"
-      style="position: fixed"
-    ></el-alert>
     <el-row>
       <el-col :xs="24" :sm="24" :md="12" :lg="16" :xl="16">
         <div style="color: transparent">占位符</div>
       </el-col>
       <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8">
-        <el-form
-          ref="form"
-          :model="form"
-          :rules="rules"
-          class="login-form"
-          label-position="left"
-        >
-          <div class="title">hello !</div>
-          <div class="title-tips">欢迎来到{{ title }}！</div>
-          <el-form-item style="margin-top: 40px" prop="username">
-            <span class="svg-container svg-container-admin">
-              <vab-icon :icon="['fas', 'user']" />
-            </span>
-            <el-input
-              v-model.trim="form.username"
-              v-focus
-              placeholder="请输入用户名"
-              tabindex="1"
-              type="text"
-            />
-          </el-form-item>
-          <el-form-item prop="password">
-            <span class="svg-container">
-              <vab-icon :icon="['fas', 'lock']" />
-            </span>
-            <el-input
-              :key="passwordType"
-              ref="password"
-              v-model.trim="form.password"
-              :type="passwordType"
-              tabindex="2"
-              placeholder="请输入密码"
-              @keyup.enter.native="handleLogin"
-            />
-            <span
-              v-if="passwordType === 'password'"
-              class="show-password"
-              @click="handlePassword"
-            >
-              <vab-icon :icon="['fas', 'eye-slash']"></vab-icon>
-            </span>
-            <span v-else class="show-password" @click="handlePassword">
-              <vab-icon :icon="['fas', 'eye']"></vab-icon>
-            </span>
-          </el-form-item>
-          <el-button
-            :loading="loading"
-            class="login-btn"
-            type="primary"
-            @click="handleLogin"
+        <div class="login-card">
+          <el-form
+            ref="form"
+            :model="form"
+            :rules="rules"
+            class="login-form"
+            label-position="left"
           >
-            登录
-          </el-button>
-          <router-link to="/register">
-            <div style="margin-top: 20px">注册</div>
-          </router-link>
-        </el-form>
+            <div class="title">hello !</div>
+            <div class="title-tips">欢迎来到{{ title }}！</div>
+            <el-form-item style="margin-top: 40px" prop="username">
+              <span class="svg-container svg-container-admin">
+                <vab-icon :icon="['fas', 'user']" />
+              </span>
+              <el-input
+                v-model.trim="form.username"
+                v-focus
+                placeholder="请输入用户名"
+                tabindex="1"
+                type="text"
+              />
+            </el-form-item>
+            <el-form-item prop="password">
+              <span class="svg-container">
+                <vab-icon :icon="['fas', 'lock']" />
+              </span>
+              <el-input
+                :key="passwordType"
+                ref="password"
+                v-model.trim="form.password"
+                :type="passwordType"
+                tabindex="2"
+                placeholder="请输入密码"
+                @keyup.enter.native="handleLogin"
+              />
+              <span
+                v-if="passwordType === 'password'"
+                class="show-password"
+                @click="handlePassword"
+              >
+                <vab-icon :icon="['fas', 'eye-slash']"></vab-icon>
+              </span>
+              <span v-else class="show-password" @click="handlePassword">
+                <vab-icon :icon="['fas', 'eye']"></vab-icon>
+              </span>
+            </el-form-item>
+            <el-button
+              :loading="loading"
+              class="login-btn"
+              type="primary"
+              @click="handleLogin"
+            >
+              登录
+            </el-button>
+            <router-link to="/register">
+              <div style="margin-top: 20px">注册</div>
+            </router-link>
+          </el-form>
+        </div>
       </el-col>
     </el-row>
   </div>
@@ -143,11 +139,11 @@
       document.body.style.overflow = 'auto'
     },
     mounted() {
-      this.form.username = 'admin'
-      this.form.password = '123456'
-      setTimeout(() => {
-        this.handleLogin()
-      }, 3000)
+      // this.form.username = 'admin'
+      // this.form.password = '123456'
+      // setTimeout(() => {
+      //   this.handleLogin()
+      // }, 3000)
     },
     methods: {
       handlePassword() {
@@ -187,8 +183,8 @@
 <style lang="scss" scoped>
   .login-container {
     height: 100vh;
-    background: url('~@/assets/login_images/background.jpg') center center fixed
-      no-repeat;
+    background: url('~@/assets/login_images/login-wrapper.jpg') center center
+      fixed no-repeat;
     background-size: cover;
 
     .title {
@@ -208,9 +204,10 @@
 
     .login-btn {
       display: inherit;
-      width: 220px;
+      width: 150px;
       height: 60px;
       margin-top: 5px;
+      margin-left: 28%;
       border: 0;
 
       &:hover {
@@ -221,8 +218,11 @@
     .login-form {
       position: relative;
       max-width: 100%;
-      margin: calc((100vh - 425px) / 2) 10% 10%;
+      margin: calc((100vh - 525px) / 2) 10% 10%;
       overflow: hidden;
+      background-color: #ffffff;
+      padding: 40px;
+      border-radius: 7px;
 
       .forget-password {
         width: 100%;
