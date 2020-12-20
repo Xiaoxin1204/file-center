@@ -54,6 +54,23 @@ export const asyncRoutes = [
     ],
   },
   {
+    path: '/mall',
+    component: Layout,
+    redirect: 'noRedirect',
+    children: [
+      {
+        path: 'goodsList',
+        name: 'GoodsList',
+        component: () => import('@/views/mall/goodsList/index'),
+        meta: {
+          title: '数据中心',
+          icon: 'shopping-cart',
+          permissions: ['admin'],
+        },
+      },
+    ],
+  },
+  {
     path: '/personnelManagement',
     component: Layout,
     redirect: 'noRedirect',
@@ -90,7 +107,36 @@ export const asyncRoutes = [
       },
     ],
   },
-
+  {
+    path: '/personnelManagement',
+    component: Layout,
+    redirect: 'noRedirect',
+    name: 'PersonnelManagement',
+    meta: { title: '权限管理', icon: 'users-cog', permissions: ['admin'] },
+    children: [
+      {
+        path: 'userManagement',
+        name: 'UserManagement',
+        component: () =>
+          import('@/views/personnelManagement/userManagement/index'),
+        meta: { title: '用户管理' },
+      },
+      {
+        path: 'roleManagement',
+        name: 'RoleManagement',
+        component: () =>
+          import('@/views/personnelManagement/roleManagement/index'),
+        meta: { title: '角色管理' },
+      },
+      {
+        path: 'menuManagement',
+        name: 'MenuManagement',
+        component: () =>
+          import('@/views/personnelManagement/menuManagement/index'),
+        meta: { title: '菜单管理' },
+      },
+    ],
+  },
   {
     path: '/vab',
     component: Layout,
@@ -302,67 +348,6 @@ export const asyncRoutes = [
           target: '_blank',
           permissions: ['admin', 'editor'],
           badge: 'New',
-        },
-      },
-    ],
-  },
-  {
-    path: '/personnelManagement',
-    component: Layout,
-    redirect: 'noRedirect',
-    name: 'PersonnelManagement',
-    meta: { title: '权限管理', icon: 'users-cog', permissions: ['admin'] },
-    children: [
-      {
-        path: 'userManagement',
-        name: 'UserManagement',
-        component: () =>
-          import('@/views/personnelManagement/userManagement/index'),
-        meta: { title: '用户管理' },
-      },
-      {
-        path: 'roleManagement',
-        name: 'RoleManagement',
-        component: () =>
-          import('@/views/personnelManagement/roleManagement/index'),
-        meta: { title: '角色管理' },
-      },
-      {
-        path: 'menuManagement',
-        name: 'MenuManagement',
-        component: () =>
-          import('@/views/personnelManagement/menuManagement/index'),
-        meta: { title: '菜单管理' },
-      },
-    ],
-  },
-  {
-    path: '/mall',
-    component: Layout,
-    redirect: 'noRedirect',
-    name: 'Mall',
-    meta: {
-      title: '数据中心',
-      icon: 'shopping-cart',
-      permissions: ['admin'],
-    },
-    children: [
-      {
-        path: 'pay',
-        name: 'Pay',
-        component: () => import('@/views/mall/pay/index'),
-        meta: {
-          title: '当前数据',
-          noKeepAlive: true,
-        },
-        children: null,
-      },
-      {
-        path: 'goodsList',
-        name: 'GoodsList',
-        component: () => import('@/views/mall/goodsList/index'),
-        meta: {
-          title: '批次数据',
         },
       },
     ],

@@ -1,5 +1,5 @@
 <template>
-  <div id="vue-admin-beautiful">
+  <div id="file-center">
     <router-view />
   </div>
 </template>

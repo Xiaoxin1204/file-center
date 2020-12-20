@@ -12,7 +12,13 @@
       fit="cover"
       @click="clickSmall"
     ></el-image>
-    <span class="vab-image__outter__percent">{{ percent }}%</span>
+    <div class="vab-image__outter__percent">
+      <span class="vab-image__outter__text" @click="showData">
+        {{ percent }}%
+      </span>
+      <span class="vab-image__outter__text cursor-pointer">导入</span>
+      <span class="vab-image__outter__text cursor-pointer">TXT</span>
+    </div>
   </div>
 </template>
 
@@ -33,6 +39,10 @@
         type: Number,
         default: 97,
       },
+      fileType: {
+        type: String,
+        default: 'excel',
+      },
     },
     data() {
       return {}
@@ -46,12 +56,18 @@
       clickSmall() {
         this.$emit('click-small')
       },
+      showData() {
+        this.$emit('show-data')
+      },
     },
   }
 </script>
 
 <style lang="scss" scoped>
   .vab-image {
+    &__label {
+      position: absolute;
+    }
     &__outter {
       position: relative;
       width: 100%;
@@ -75,17 +91,19 @@
       }
 
       &__percent {
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        display: inline-block;
-        min-width: 50px;
-        height: 25px;
-        line-height: 25px;
         color: $base-color-white;
         text-align: center;
-        background-color: $base-color-red;
+        margin-top: 10px;
+      }
+
+      &__text {
+        padding: 7px 10px;
+        width: 50px;
+        height: 30px;
+        line-height: 30px;
+        background-color: #1890ff;
         border-radius: $base-border-radius;
+        margin-right: 10px;
       }
     }
   }
