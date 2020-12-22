@@ -188,7 +188,7 @@
             </div>
             <div class="start-auto">
               <div style="position: relative">
-                <h4>批量导出</h4>
+                <h4>全量导出</h4>
                 <i
                   :class="{
                     'start-unfinished':
@@ -254,7 +254,7 @@
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
             <el-card shadow="never">
               <div slot="header">
-                <span>访问量</span>
+                <span>文件处理统计</span>
               </div>
               <vab-chart
                 :autoresize="true"
@@ -263,7 +263,7 @@
               />
               <div class="bottom">
                 <span>
-                  日均访问量:
+                  日均处理量:
 
                   <vab-count
                     :start-val="config1.startVal"
@@ -320,8 +320,8 @@
         sysDate: '',
         openAutoStatus: '0',
         initData: {
-          initStatus: 1, // 0--未开始  1--进行中  2--完成 3--错误
-          importStatus: 0,
+          initStatus: 2, // 0--未开始  1--进行中  2--完成 3--错误
+          importStatus: 1,
           dealStatus: 0,
           exportStatus: 0,
         },
@@ -333,7 +333,7 @@
         devDependencies: devDependencies,
         config1: {
           startVal: 0,
-          endVal: this.$baseLodash.random(20000, 60000),
+          endVal: 6,
           decimals: 0,
           prefix: '',
           suffix: '',
@@ -655,7 +655,7 @@
       const month = today.getMonth() + 1
       const day = today.getDate() + 1
       this.sysDate = today.getFullYear() + '-' + month + '-' + day
-      let base = +new Date(2020, 1, 1)
+      let base = +new Date(2020, 11, 1)
       let oneDay = 24 * 3600 * 1000
       let date = []
 
@@ -665,7 +665,7 @@
       const addData = (shift) => {
         now = [now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/')
         date.push(now)
-        data.push(this.$baseLodash.random(20000, 60000))
+        data.push(this.$baseLodash.random(4, 10))
 
         if (shift) {
           date.shift()

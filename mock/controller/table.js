@@ -2,13 +2,13 @@ const { mock } = require('mockjs')
 const { handleRandomImage } = require('../utils')
 
 const List = []
-const count = 999
+const count = 5
 for (let i = 0; i < count; i++) {
   List.push(
     mock({
       uuid: '@uuid',
       id: '@id',
-      title: '@csentence(1, 2)',
+      title: '净值文件',
       'status|1': ['published', 'draft', 'deleted'],
       author: '@cname',
       datetime: '@datetime',
