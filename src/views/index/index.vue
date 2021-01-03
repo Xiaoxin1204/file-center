@@ -155,7 +155,7 @@
                   </div>
                 </div>
                 <div
-                  v-if="openAutoStatus === '1' && !complete"
+                  v-if="openAutoStatus === '1'"
                   class="executing-circle"
                   @click="stopAuto()"
                 >
@@ -179,7 +179,7 @@
                     <span class="setAuto">启动</span>
                   </div>
                 </div>
-                <div v-if="complete" class="finish-circle1">
+                <div v-if="initData.dealStatus == '2'" class="finish-circle1">
                   <div class="finish-circle2">
                     <span>完成</span>
                   </div>
@@ -200,10 +200,7 @@
                 </i>
               </div>
               <div class="init-status">
-                <div
-                  v-if="openAutoStatus === '0' && !complete"
-                  class="unstart-circle1"
-                >
+                <div v-if="openAutoStatus === '0'" class="unstart-circle1">
                   <div
                     :class="
                       initData.exportStatus === 0 && initData.dealStatus === 2
@@ -217,7 +214,7 @@
                   </div>
                 </div>
                 <div
-                  v-if="openAutoStatus === '1' && !complete"
+                  v-if="openAutoStatus === '1'"
                   class="executing-circle"
                   @click="stopAuto()"
                 >
@@ -229,7 +226,7 @@
                   </div>
                 </div>
                 <div
-                  v-if="openAutoStatus === '2' && !complete"
+                  v-if="openAutoStatus === '2'"
                   class="error-circle1"
                   style="cursor: pointer"
                   @click="openAuto()"
@@ -239,7 +236,7 @@
                     <span class="setAuto">启动</span>
                   </div>
                 </div>
-                <div v-if="complete" class="finish-circle1">
+                <div v-if="initData.exportStatus == '2'" class="finish-circle1">
                   <div class="finish-circle2">
                     <span>完成</span>
                   </div>
@@ -307,7 +304,6 @@
   import VabChart from '@/plugins/echarts'
   import { dependencies, devDependencies } from '../../../package.json'
   import { getList } from '@/api/changeLog'
-  import { getNoticeList } from '@/api/notice'
   import { getRepos, getStargazers } from '@/api/github'
   export default {
     name: 'Index',
@@ -704,7 +700,6 @@
           }
         })
         this.activities = data
-        const res = await getNoticeList()
         this.noticeList = res.data
         /* getRepos({
         token: "1061286824f978ea3cf98b7b8ea26fe27ba7cea1",

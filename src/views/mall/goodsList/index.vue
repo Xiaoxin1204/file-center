@@ -1,42 +1,36 @@
 <template>
   <div class="goods-list-container">
-    <div>
-      <div class="card-container">
-        <el-row :gutter="20">
-          <el-col
-            v-for="(item, index) in list"
-            :key="index"
-            :xs="24"
-            :sm="8"
-            :md="8"
-            :lg="8"
-            :xl="4"
-          >
-            <el-card shadow="hover">
-              <div slot="header">
-                <span>{{ item.title }}</span>
-              </div>
-              <div style="width: 100%; height: 200px">
-                <vab-image
-                  :big-src="item.img"
-                  :percent="item.percent"
-                  :small-src="item.smallImg"
-                  :file-type="item.fileType"
-                  @clickBig="bigClick(item)"
-                  @clickSmall="smallClick(item)"
-                  @showData="showData(item)"
-                ></vab-image>
-              </div>
-              <el-progress
-                :text-inside="true"
-                :stroke-width="8"
-                :percentage="70"
-                :show-text="false"
-              ></el-progress>
-            </el-card>
-          </el-col>
-        </el-row>
-      </div>
+    <div class="card-container">
+      <el-row :gutter="20">
+        <el-col
+          v-for="(item, index) in list"
+          :key="index"
+          :xs="24"
+          :sm="8"
+          :md="8"
+          :lg="8"
+          :xl="4"
+        >
+          <el-card shadow="hover" @click.native="openClick(item)">
+            <div slot="header">
+              <span>{{ item.title }}</span>
+            </div>
+            <div style="width: 100%; height: 200px">
+              <vab-image
+                :big-src="item.img"
+                :percent="item.percent"
+                :small-src="item.smallImg"
+                :file-type="item.fileType"
+              ></vab-image>
+            </div>
+            <el-progress
+              :stroke-width="8"
+              :percentage="item.percent"
+              :show-text="false"
+            ></el-progress>
+          </el-card>
+        </el-col>
+      </el-row>
     </div>
     <el-pagination
       background
@@ -47,19 +41,20 @@
       @current-change="handleCurrentChange"
       @size-change="handleSizeChange"
     ></el-pagination>
+    <detailModal ref="detail"></detailModal>
   </div>
 </template>
 
 <script>
-  // import { getList } from '@/api/goodsList'
-  import Card from '../../vab/card/index'
   import { getList } from '@/api/table'
   import VabImage from '@/components/VabImage'
+  import DetailModal from './components/detailModal'
 
   export default {
     name: 'Goods',
     components: {
       VabImage,
+      DetailModal,
     },
     data() {
       return {
@@ -73,18 +68,12 @@
         layout: 'total, sizes, prev, pager, next, jumper',
         total: 0,
         elementLoadingText: '正在加载...',
-
         value: true,
         currentDate: new Date(),
-        // list: null,
-        // listLoading: true,
         pageNo: 1,
         pageSize: 10,
-        // layout: 'total, sizes, prev, pager, next, jumper',
-        // total: 0,
         background: true,
         height: 0,
-        // elementLoadingText: '正在加载...',
         dialogFormVisible: false,
       }
     },
@@ -93,15 +82,13 @@
       this.height = this.$baseTableHeight(1)
     },
     methods: {
-      bigClick(val) {
-        console.log('11')
-        this.$baseAlert('点击了大图')
-      },
-      smallClick(val) {
-        this.$baseAlert('点击了小图')
-      },
-      showData(val) {
-        this.$baseAlert('123')
+      openClick(item) {
+        console.log('11', item)
+        if (item) {
+          this.$refs['detail'].openModal(item)
+        } else {
+          this.$refs['detail'].openModal()
+        }
       },
       handleSizeChange(val) {
         this.queryForm.pageSize = val

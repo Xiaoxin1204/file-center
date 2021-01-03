@@ -64,45 +64,45 @@ export const asyncRoutes = [
         component: () => import('@/views/mall/goodsList/index'),
         meta: {
           title: '数据中心',
-          icon: 'shopping-cart',
+          icon: 'bezier-curve',
           permissions: ['admin'],
         },
       },
     ],
   },
   {
-    path: '/personnelManagement',
+    path: '/systemManagement',
     component: Layout,
     redirect: 'noRedirect',
-    name: 'PersonnelManagement',
-    meta: { title: '配置', icon: 'users-cog', permissions: ['admin'] },
+    name: 'SystemManagement',
+    meta: { title: '配置管理', icon: 'users-cog', permissions: ['admin'] },
     children: [
       {
-        path: 'userManagement',
-        name: 'UserManagement',
+        path: 'parameterManagement',
+        name: 'ParameterManagement',
         component: () =>
-          import('@/views/personnelManagement/userManagement/index'),
+          import('@/views/systemManagement/parameterManagement/index'),
         meta: { title: '参数配置' },
       },
       {
-        path: 'roleManagement',
-        name: 'RoleManagement',
+        path: 'fileManagement',
+        name: 'FileManagement',
         component: () =>
-          import('@/views/personnelManagement/roleManagement/index'),
+          import('@/views/systemManagement/fileManagement/index'),
         meta: { title: '文件配置' },
       },
       {
-        path: 'menuManagement',
-        name: 'MenuManagement',
+        path: 'wildcardManagement',
+        name: 'WildcardManagement',
         component: () =>
-          import('@/views/personnelManagement/menuManagement/index'),
+          import('@/views/systemManagement/wildcardManagement/index'),
         meta: { title: '通配符配置' },
       },
       {
-        path: 'menuManagement',
-        name: 'MenuManagement',
+        path: 'batchManagement',
+        name: 'BatchManagement',
         component: () =>
-          import('@/views/personnelManagement/menuManagement/index'),
+          import('@/views/systemManagement/batchManagement/index'),
         meta: { title: '批次配置' },
       },
     ],

@@ -13,9 +13,6 @@
       @click="clickSmall"
     ></el-image>
     <div class="vab-image__outter__percent">
-      <span class="vab-image__outter__text" @click="showData">
-        {{ percent }}%
-      </span>
       <span class="vab-image__outter__text cursor-pointer">导入</span>
       <span class="vab-image__outter__text cursor-pointer">TXT</span>
     </div>
@@ -55,9 +52,6 @@
       },
       clickSmall() {
         this.$emit('click-small')
-      },
-      showData() {
-        this.$emit('show-data')
       },
     },
   }
