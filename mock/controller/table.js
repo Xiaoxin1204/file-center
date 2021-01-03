@@ -71,7 +71,7 @@ module.exports = [
     response() {
       return {
         code: 200,
-        msg: '模拟保存成功',
+        msg: '保存成功',
       }
     },
   },
@@ -81,7 +81,7 @@ module.exports = [
     response() {
       return {
         code: 200,
-        msg: '模拟删除成功',
+        msg: '删除成功',
       }
     },
   },

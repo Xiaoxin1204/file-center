@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function getNoticeList() {
+export function getTableDetail() {
   return request({
-    url: '/notice/getList',
+    url: '/tableDetail/getTableDetail',
     method: 'post',
   })
 }

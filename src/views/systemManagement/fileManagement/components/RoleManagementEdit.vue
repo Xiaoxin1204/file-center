@@ -6,11 +6,8 @@
     @close="close"
   >
     <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-      <el-form-item label="name" prop="name">
-        <el-input v-model="form.name" autocomplete="off"></el-input>
-      </el-form-item>
-      <el-form-item label="路径" prop="path">
-        <el-input v-model="form.path" autocomplete="off"></el-input>
+      <el-form-item label="权限码" prop="permission">
+        <el-input v-model="form.permission" autocomplete="off"></el-input>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -21,15 +18,19 @@
 </template>
 
 <script>
-  import { doEdit } from '@/api/menuManagement'
+  import { doEdit } from '@/api/roleManagement'
 
   export default {
-    name: 'MenuManagementEdit',
+    name: 'RoleManagementEdit',
     data() {
       return {
-        form: {},
+        form: {
+          id: '',
+        },
         rules: {
-          id: [{ required: true, trigger: 'blur', message: '请输入路径' }],
+          permission: [
+            { required: true, trigger: 'blur', message: '请输入权限码' },
+          ],
         },
         title: '',
         dialogFormVisible: false,

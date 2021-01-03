@@ -17,6 +17,39 @@ const data = [
     ],
   },
   {
+    path: '/systemManagement',
+    component: 'Layout',
+    redirect: 'noRedirect',
+    name: 'SystemManagement',
+    meta: { title: '配置', icon: 'users-cog', permissions: ['admin'] },
+    children: [
+      {
+        path: 'parameterManagement',
+        name: 'parameterManagement',
+        component: '@/views/systemManagement/parameterManagement/index',
+        meta: { title: '参数配置' },
+      },
+      {
+        path: 'fileManagement',
+        name: 'fileManagement',
+        component: '@/views/systemManagement/fileManagement/index',
+        meta: { title: '文件配置' },
+      },
+      {
+        path: 'wildcardManagement',
+        name: 'wildcardManagement',
+        component: '@/views/systemManagement/wildcardManagement/index',
+        meta: { title: '通配符配置' },
+      },
+      {
+        path: 'batchManagement',
+        name: 'batchManagement',
+        component: '@/views/systemManagement/batchManagement/index',
+        meta: { title: '批次配置' },
+      },
+    ],
+  },
+  {
     path: '/personnelManagement',
     component: 'Layout1',
     redirect: 'noRedirect',
