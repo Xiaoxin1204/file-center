@@ -2,20 +2,14 @@
   <div class="menuManagement-container">
     <el-divider content-position="left"></el-divider>
     <el-row>
-      <el-col :xs="24" :sm="24" :md="8" :lg="4" :xl="4">
-        <el-tree
-          :data="data"
-          :props="defaultProps"
-          node-key="id"
-          :default-expanded-keys="['root']"
-          @node-click="handleNodeClick"
-        ></el-tree>
-      </el-col>
-      <el-col :xs="24" :sm="24" :md="16" :lg="20" :xl="20">
+      <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
         <vab-query-form>
           <vab-query-form-top-panel :span="12">
             <el-button icon="el-icon-plus" type="primary" @click="handleEdit">
               添加
+            </el-button>
+            <el-button icon="el-icon-plus" type="danger" @click="handleDelete">
+              批量删除
             </el-button>
           </vab-query-form-top-panel>
         </vab-query-form>
@@ -23,11 +17,12 @@
           v-loading="listLoading"
           :data="list"
           :element-loading-text="elementLoadingText"
-          row-key="path"
-          border
-          default-expand-all
-          :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+          @selection-change="setSelectRows"
         >
+          <el-table-column
+            show-overflow-tooltip
+            type="selection"
+          ></el-table-column>
           <el-table-column
             show-overflow-tooltip
             prop="name"
@@ -152,6 +147,18 @@
             this.$baseMessage(msg, 'success')
             this.fetchData()
           })
+        } else {
+          if (this.selectRows.length > 0) {
+            const ids = this.selectRows.map((item) => item.id).join()
+            this.$baseConfirm('你确定要删除选中项吗', null, async () => {
+              const { msg } = await doDelete({ ids })
+              this.$baseMessage(msg, 'success')
+              this.fetchData()
+            })
+          } else {
+            this.$baseMessage('未选中任何行', 'error')
+            return false
+          }
         }
       },
       async fetchData() {

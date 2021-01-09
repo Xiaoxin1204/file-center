@@ -26,6 +26,7 @@ module.exports = [
     url: '/table/getList',
     type: 'post',
     response(config) {
+      console.log(config)
       if (!config.body) {
         return {
           code: 200,

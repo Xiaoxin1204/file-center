@@ -13,8 +13,35 @@
       @click="clickSmall"
     ></el-image>
     <div class="vab-image__outter__percent">
-      <span class="vab-image__outter__text cursor-pointer">导入</span>
-      <span class="vab-image__outter__text cursor-pointer">TXT</span>
+      <span
+        v-if="fileStatus === '0' && batchFlag === 'I'"
+        class="vab-image__outter__text vab-image__outter__deal cursor-pointer"
+      >
+        可导入
+      </span>
+      <span
+        v-if="fileStatus === '2' && batchFlag === 'I'"
+        class="vab-image__outter__text vab-image__outter__done cursor-pointer"
+      >
+        已导入
+      </span>
+      <span
+        v-if="fileStatus === '0' && batchFlag === 'O'"
+        class="vab-image__outter__text vab-image__outter__deal cursor-pointer"
+      >
+        可导出
+      </span>
+      <span
+        v-if="fileStatus === '2' && batchFlag === 'O'"
+        class="vab-image__outter__text vab-image__outter__done cursor-pointer"
+      >
+        已导出
+      </span>
+      <span
+        class="vab-image__outter__text vab-image__outter__type cursor-pointer"
+      >
+        {{ fileType }}
+      </span>
     </div>
   </div>
 </template>
@@ -36,9 +63,17 @@
         type: Number,
         default: 97,
       },
+      batchFlag: {
+        type: String,
+        default: 'I',
+      },
+      fileStatus: {
+        type: String,
+        default: '0',
+      },
       fileType: {
         type: String,
-        default: 'excel',
+        default: '',
       },
     },
     data() {
@@ -95,9 +130,17 @@
         width: 50px;
         height: 30px;
         line-height: 30px;
-        background-color: #1890ff;
         border-radius: $base-border-radius;
         margin-right: 10px;
+      }
+      &__deal {
+        background-color: #1890ff;
+      }
+      &__done {
+        background-color: #f5a623;
+      }
+      &__type {
+        background-color: #66ccaa;
       }
     }
   }

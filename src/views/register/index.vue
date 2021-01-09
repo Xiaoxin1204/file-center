@@ -230,8 +230,11 @@
     .register-form {
       position: relative;
       max-width: 100%;
-      margin: calc((100vh - 499px) / 2) 10% 10%;
+      margin: calc((100vh - 530px) / 2) 10% 10%;
       overflow: hidden;
+      background-color: #ffffff;
+      padding: 20px 40px;
+      border-radius: 7px;
 
       .forget-password {
         width: 100%;

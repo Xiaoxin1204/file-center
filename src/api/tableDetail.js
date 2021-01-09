@@ -6,3 +6,9 @@ export function getTableDetail() {
     method: 'post',
   })
 }
+export function getHeaderNav() {
+  return request({
+    url: '/tableHeader/nav',
+    method: 'get',
+  })
+}

@@ -39,13 +39,17 @@
                   v-if="initData.initStatus === 0"
                   class="unstart-circle1"
                   style="cursor: pointer"
-                  @click="startInit(initData.id)"
+                  @click="startInit(initData)"
                 >
                   <div class="unstart-circle2">
                     <span>初始化</span>
                   </div>
                 </div>
-                <div v-if="initData.initStatus === 1" class="executing-circle">
+                <div
+                  v-if="initData.initStatus === 1"
+                  class="executing-circle"
+                  @click="startInit(initData)"
+                >
                   <div class="executing-circle1"></div>
                   <div class="executing-circle2">
                     <div class="executing-circle3"></div>
@@ -61,7 +65,7 @@
                   v-if="initData.initStatus === 3"
                   class="error-circle1"
                   style="cursor: pointer"
-                  @click="startInit(initData.id)"
+                  @click="startInit(initData)"
                 >
                   <div class="error-circle2">
                     <span>错误</span>
@@ -89,9 +93,13 @@
               <div class="init-status">
                 <div v-if="initData.importStatus === 0" class="unstart-circle1">
                   <div
-                    :class="initData.importStatus === 3 ? 'can-executing' : ''"
+                    :class="
+                      initData.initStatus === 2 && initData.importStatus === 0
+                        ? 'can-executing'
+                        : ''
+                    "
                     class="unstart-circle2"
-                    @click="openLayer(initData)"
+                    @click="startImport(initData)"
                   >
                     <span>导入</span>
                   </div>
@@ -112,9 +120,8 @@
                   style="cursor: default"
                 >
                   <div
-                    v-if="initData.importStatus === '2'"
+                    v-if="initData.importStatus === 2"
                     class="finish-circle2"
-                    @click="openLayer()"
                   >
                     <span>完成</span>
                   </div>
@@ -131,7 +138,7 @@
                 <h4>处理数据</h4>
                 <i
                   :class="{
-                    'start-unfinished': !initData || initData.dealStatus !== 2,
+                    'start-unfinished': initData.dealStatus === 2,
                   }"
                   class="batchprocess-init-step2"
                 >
@@ -139,26 +146,22 @@
                 </i>
               </div>
               <div class="init-status">
-                <div v-if="openAutoStatus === '0'" class="unstart-circle1">
+                <div v-if="initData.dealStatus === 0" class="unstart-circle1">
                   <div
                     :class="
                       initData &&
                       initData.dealStatus === 0 &&
-                      initData.importStatus === '2'
+                      initData.importStatus === 2
                         ? 'can-executing'
                         : ''
                     "
                     class="unstart-circle2"
-                    @click="openAuto()"
+                    @click="startDeal(initData)"
                   >
                     <span>处理</span>
                   </div>
                 </div>
-                <div
-                  v-if="openAutoStatus === '1'"
-                  class="executing-circle"
-                  @click="stopAuto()"
-                >
+                <div v-if="initData.dealStatus === 1" class="executing-circle">
                   <div class="executing-circle1"></div>
                   <div class="executing-circle2">
                     <div class="executing-circle3"></div>
@@ -166,20 +169,7 @@
                     <span class="stopAuto">暂停</span>
                   </div>
                 </div>
-                <div
-                  v-if="
-                    initData.dealStatus === '2' && initData.dealStatus === '0'
-                  "
-                  class="error-circle1"
-                  style="cursor: pointer"
-                  @click="openAuto()"
-                >
-                  <div class="stop-circle2">
-                    <span>已暂停</span>
-                    <span class="setAuto">启动</span>
-                  </div>
-                </div>
-                <div v-if="initData.dealStatus == '2'" class="finish-circle1">
+                <div v-if="initData.dealStatus === 2" class="finish-circle1">
                   <div class="finish-circle2">
                     <span>完成</span>
                   </div>
@@ -200,7 +190,7 @@
                 </i>
               </div>
               <div class="init-status">
-                <div v-if="openAutoStatus === '0'" class="unstart-circle1">
+                <div v-if="initData.exportStatus === 0" class="unstart-circle1">
                   <div
                     :class="
                       initData.exportStatus === 0 && initData.dealStatus === 2
@@ -208,15 +198,14 @@
                         : ''
                     "
                     class="unstart-circle2"
-                    @click="openAuto()"
+                    @click="startExport(initData)"
                   >
                     <span>导出</span>
                   </div>
                 </div>
                 <div
-                  v-if="openAutoStatus === '1'"
+                  v-if="initData.exportStatus === 1"
                   class="executing-circle"
-                  @click="stopAuto()"
                 >
                   <div class="executing-circle1"></div>
                   <div class="executing-circle2">
@@ -229,14 +218,13 @@
                   v-if="openAutoStatus === '2'"
                   class="error-circle1"
                   style="cursor: pointer"
-                  @click="openAuto()"
                 >
                   <div class="stop-circle2">
                     <span>已暂停</span>
                     <span class="setAuto">启动</span>
                   </div>
                 </div>
-                <div v-if="initData.exportStatus == '2'" class="finish-circle1">
+                <div v-if="initData.exportStatus === 2" class="finish-circle1">
                   <div class="finish-circle2">
                     <span>完成</span>
                   </div>
@@ -304,7 +292,7 @@
   import VabChart from '@/plugins/echarts'
   import { dependencies, devDependencies } from '../../../package.json'
   import { getList } from '@/api/changeLog'
-  import { getRepos, getStargazers } from '@/api/github'
+  import { getBatchNode } from '@/api/getData'
   export default {
     name: 'Index',
     components: {
@@ -313,11 +301,11 @@
     data() {
       return {
         confirmDate: '',
-        sysDate: '',
+        sysDate: '2020-04-13',
         openAutoStatus: '0',
         initData: {
-          initStatus: 2, // 0--未开始  1--进行中  2--完成 3--错误
-          importStatus: 1,
+          initStatus: 0, // 0--未开始  1--进行中  2--完成 3--错误
+          importStatus: 0,
           dealStatus: 0,
           exportStatus: 0,
         },
@@ -389,259 +377,17 @@
             },
           ],
         },
-        //授权数
-        sqs: {
-          grid: {
-            top: '4%',
-            left: '2%',
-            right: '4%',
-            bottom: '0%',
-            containLabel: true,
-          },
-          xAxis: [
-            {
-              type: 'category',
-              /*boundaryGap: false,*/
-              data: ['0时', '4时', '8时', '12时', '16时', '20时', '24时'],
-              axisTick: {
-                alignWithLabel: true,
-              },
-            },
-          ],
-          yAxis: [
-            {
-              type: 'value',
-            },
-          ],
-          series: [
-            {
-              name: '授权数',
-              type: 'bar',
-              barWidth: '60%',
-              data: [10, 52, 20, 33, 39, 33, 22],
-            },
-          ],
-        },
-        //词云
-        cy: {
-          grid: {
-            top: '4%',
-            left: '2%',
-            right: '4%',
-            bottom: '0%',
-          },
-          series: [
-            {
-              type: 'wordCloud',
-              gridSize: 15,
-              sizeRange: [12, 40],
-              rotationRange: [0, 0],
-              width: '100%',
-              height: '100%',
-              textStyle: {
-                normal: {
-                  color() {
-                    const arr = [
-                      '#1890FF',
-                      '#36CBCB',
-                      '#4ECB73',
-                      '#FBD437',
-                      '#F2637B',
-                      '#975FE5',
-                    ]
-                    let index = Math.floor(Math.random() * arr.length)
-                    return arr[index]
-                  },
-                },
-              },
-              data: [
-                {
-                  name: 'vue-admin-beautiful',
-                  value: 15000,
-                },
-                {
-                  name: 'element',
-                  value: 10081,
-                },
-                {
-                  name: 'beautiful',
-                  value: 9386,
-                },
-
-                {
-                  name: 'vue',
-                  value: 6500,
-                },
-                {
-                  name: 'chuzhixin',
-                  value: 6000,
-                },
-                {
-                  name: 'good',
-                  value: 4500,
-                },
-                {
-                  name: 'success',
-                  value: 3800,
-                },
-                {
-                  name: 'never',
-                  value: 3000,
-                },
-                {
-                  name: 'boy',
-                  value: 2500,
-                },
-                {
-                  name: 'girl',
-                  value: 2300,
-                },
-                {
-                  name: 'github',
-                  value: 2000,
-                },
-                {
-                  name: 'hbuilder',
-                  value: 1900,
-                },
-                {
-                  name: 'dcloud',
-                  value: 1800,
-                },
-                {
-                  name: 'china',
-                  value: 1700,
-                },
-                {
-                  name: '1204505056',
-                  value: 1600,
-                },
-                {
-                  name: '972435319',
-                  value: 1500,
-                },
-                {
-                  name: 'young',
-                  value: 1200,
-                },
-                {
-                  name: 'old',
-                  value: 1100,
-                },
-                {
-                  name: 'vuex',
-                  value: 900,
-                },
-                {
-                  name: 'router',
-                  value: 800,
-                },
-                {
-                  name: 'money',
-                  value: 700,
-                },
-                {
-                  name: 'qingdao',
-                  value: 800,
-                },
-                {
-                  name: 'yantai',
-                  value: 9000,
-                },
-                {
-                  name: 'author is very cool',
-                  value: 9200,
-                },
-              ],
-            },
-          ],
-        },
-        //中国地图
-        zgdt: {
-          title: {
-            text: '2099年全国GDP分布',
-            subtext: '数据来自vue-admin-beautiful杜撰',
-          },
-          tooltip: {
-            trigger: 'item',
-          },
-          dataRange: {
-            orient: 'horizontal',
-            min: 0,
-            max: 55000,
-            text: ['高', '低'],
-            splitNumber: 0,
-          },
-          series: [
-            {
-              name: '2099年全国GDP分布',
-              type: 'map',
-              roam: false,
-              zoom: 1.25,
-              mapType: 'china',
-              mapLocation: {
-                x: 'center',
-              },
-              selectedMode: 'multiple',
-              itemStyle: {
-                normal: {
-                  label: {
-                    show: false,
-                  },
-                },
-                emphasis: {
-                  label: {
-                    show: true,
-                  },
-                },
-              },
-              data: [
-                { name: '西藏', value: 605.83 },
-                { name: '青海', value: 1670.44 },
-                { name: '宁夏', value: 2102.21 },
-                { name: '海南', value: 2522.66 },
-                { name: '甘肃', value: 5020.37 },
-                { name: '贵州', value: 5701.84 },
-                { name: '新疆', value: 6610.05 },
-                { name: '云南', value: 8893.12 },
-                { name: '重庆', value: 10011.37 },
-                { name: '吉林', value: 10568.83 },
-                { name: '山西', value: 11237.55 },
-                { name: '天津', value: 11307.28 },
-                { name: '江西', value: 11702.82 },
-                { name: '广西', value: 11720.87 },
-                { name: '陕西', value: 12512.3 },
-                { name: '黑龙江', value: 12582 },
-                { name: '内蒙古', value: 14359.88 },
-                { name: '安徽', value: 15300.65 },
-                { name: '北京', value: 16251.93 },
-                { name: '福建', value: 17560.18 },
-                { name: '上海', value: 19195.69 },
-                { name: '湖北', value: 19632.26 },
-                { name: '湖南', value: 19669.56 },
-                { name: '四川', value: 21026.68 },
-                { name: '辽宁', value: 22226.7 },
-                { name: '河北', value: 24515.76 },
-                { name: '河南', value: 26931.03 },
-                { name: '浙江', value: 32318.85 },
-                { name: '山东', value: 45361.85, selected: true },
-                { name: '江苏', value: 49110.27 },
-                { name: '广东', value: 53210.28 },
-              ],
-            },
-          ],
-        },
 
         //更新日志
         reverse: true,
         activities: [],
-        noticeList: [],
         //其他信息
         userAgent: navigator.userAgent,
       }
     },
     created() {
       this.fetchData()
+      this.getBatchNode()
     },
     beforeDestroy() {
       clearInterval(this.timer)
@@ -650,7 +396,6 @@
       let today = new Date()
       const month = today.getMonth() + 1
       const day = today.getDate() + 1
-      this.sysDate = today.getFullYear() + '-' + month + '-' + day
       let base = +new Date(2020, 11, 1)
       let oneDay = 24 * 3600 * 1000
       let date = []
@@ -684,7 +429,52 @@
       }, 3000)
     },
     methods: {
-      startInit() {},
+      startInit(data) {
+        console.log(data)
+        if (data.initStatus === 0) {
+          this.initData.initStatus = 1
+          setTimeout(() => {
+            this.initData.initStatus = 2
+            this.initData.importStatus = 0
+            // 路由导航到详情展示页面
+            setTimeout(() => {
+              this.$router.push(`/mall/goodsList?sysDate=${this.sysDate}`)
+            }, 200)
+          }, 2000)
+        }
+      },
+      startImport(data) {
+        if (data.importStatus === 0) {
+          this.initData.importStatus = 1
+          setTimeout(() => {
+            this.initData.importStatus = 2
+            this.initData.dealStatus = 0
+            setTimeout(() => {
+              this.$router.push('/mall/goodsList')
+            }, 200)
+          }, 2000)
+        }
+      },
+      startDeal(data) {
+        if (data.dealStatus === 0) {
+          this.initData.dealStatus = 1
+          setTimeout(() => {
+            this.initData.dealStatus = 2
+            this.initData.exportStatus = 0
+          }, 4000)
+        }
+      },
+      startExport(data) {
+        if (data.exportStatus === 0) {
+          this.initData.exportStatus = 1
+          setTimeout(() => {
+            this.initData.exportStatus = 2
+            setTimeout(() => {
+              this.$router.push('/mall/goodsList')
+            }, 200)
+          }, 2000)
+        }
+      },
       handleClick(e) {
         this.$baseMessage(`点击了${e.name},这里可以写跳转`)
       },
@@ -700,20 +490,12 @@
           }
         })
         this.activities = data
-        this.noticeList = res.data
-        /* getRepos({
-        token: "1061286824f978ea3cf98b7b8ea26fe27ba7cea1",
-      }).then((res) => {
-        const per_page = Math.ceil(res.data.stargazers_count / 100);
-        alert(per_page);
-        getStargazers({
-          token: "1061286824f978ea3cf98b7b8ea26fe27ba7cea1",
-          page: 1,
-          per_page: res.per_page,
-        }).then((res) => {
-          alert(JSON.stringify(res));
-        });
-      }); */
+      },
+      getBatchNode() {
+        getBatchNode().then((res) => {
+          console.log(res)
+          this.initData = res.data
+        })
       },
     },
   }

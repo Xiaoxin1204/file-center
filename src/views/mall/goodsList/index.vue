@@ -1,46 +1,55 @@
 <template>
   <div class="goods-list-container">
-    <div class="card-container">
-      <el-row :gutter="20">
-        <el-col
-          v-for="(item, index) in list"
-          :key="index"
-          :xs="24"
-          :sm="8"
-          :md="8"
-          :lg="8"
-          :xl="4"
+    <el-collapse v-model="activeName" style="position: relative" accordion>
+      <el-collapse-item
+        v-for="(obj, i) in listData"
+        :key="i"
+        :title="obj.batchName"
+        :name="obj.batchCode"
+      >
+        <el-button
+          type="primary"
+          style="position: absolute; right: 40px; top: 9px"
+          @click="handleBatchImport"
         >
-          <el-card shadow="hover" @click.native="openClick(item)">
-            <div slot="header">
-              <span>{{ item.title }}</span>
-            </div>
-            <div style="width: 100%; height: 200px">
-              <vab-image
-                :big-src="item.img"
-                :percent="item.percent"
-                :small-src="item.smallImg"
-                :file-type="item.fileType"
-              ></vab-image>
-            </div>
-            <el-progress
-              :stroke-width="8"
-              :percentage="item.percent"
-              :show-text="false"
-            ></el-progress>
-          </el-card>
-        </el-col>
-      </el-row>
-    </div>
-    <el-pagination
-      background
-      :current-page="queryForm.pageNo"
-      :layout="layout"
-      :page-size="queryForm.pageSize"
-      :total="total"
-      @current-change="handleCurrentChange"
-      @size-change="handleSizeChange"
-    ></el-pagination>
+          批次导入
+        </el-button>
+        <div class="card-container">
+          <el-row :gutter="20">
+            <el-col
+              v-for="(item, index) in obj.fileList"
+              :key="index"
+              :xs="24"
+              :sm="8"
+              :md="8"
+              :lg="8"
+              :xl="4"
+            >
+              <el-card shadow="hover" @click.native="openClick(item)">
+                <div slot="header">
+                  <span>{{ item.fileName }}</span>
+                </div>
+                <div style="width: 100%; height: 200px">
+                  <vab-image
+                    :big-src="item.img"
+                    :percent="item.percent"
+                    :small-src="item.smallImg"
+                    :file-type="item.fileType"
+                    :file-status="item.status"
+                    :batch-flag="obj.exchangeFlag"
+                  ></vab-image>
+                </div>
+                <el-progress
+                  :stroke-width="8"
+                  :percentage="item.percent"
+                  :show-text="false"
+                ></el-progress>
+              </el-card>
+            </el-col>
+          </el-row>
+        </div>
+      </el-collapse-item>
+    </el-collapse>
     <detailModal ref="detail"></detailModal>
   </div>
 </template>
@@ -49,6 +58,7 @@
   import { getList } from '@/api/table'
   import VabImage from '@/components/VabImage'
   import DetailModal from './components/detailModal'
+  import { getBatchData, getFileDetail } from '@/api/getData'
 
   export default {
     name: 'Goods',
@@ -58,12 +68,14 @@
     },
     data() {
       return {
+        activeName: '',
         queryForm: {
           pageNo: 1,
           pageSize: 20,
           title: '',
         },
         list: null,
+        listData: null,
         listLoading: true,
         layout: 'total, sizes, prev, pager, next, jumper',
         total: 0,
@@ -82,8 +94,13 @@
       this.height = this.$baseTableHeight(1)
     },
     methods: {
+      handleBatchImport() {
+        console.log('123')
+      },
       openClick(item) {
-        console.log('11', item)
+        getFileDetail(item.dataSource).then((res) => {
+          console.log(res)
+        })
         if (item) {
           this.$refs['detail'].openModal(item)
         } else {
@@ -104,6 +121,10 @@
       },
       async fetchData() {
         this.listLoading = true
+        getBatchData().then((res) => {
+          this.listData = res.data
+          this.activeName = this.listData[0].batchCode
+        })
         const { data, totalCount } = await getList(this.queryForm)
         this.list = data
         this.total = totalCount
