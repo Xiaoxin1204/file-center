@@ -25,14 +25,14 @@
               :lg="8"
               :xl="4"
             >
-              <el-card shadow="hover" @click.native="openClick(item)">
+              <el-card shadow="hover" @click.native="openClick(item, obj)">
                 <div slot="header">
                   <span>{{ item.fileName }}</span>
                 </div>
                 <div style="width: 100%; height: 200px">
                   <vab-image
                     :big-src="item.img"
-                    :percent="item.percent"
+                    :percent="item.status === '2' ? 100 : item.percent"
                     :small-src="item.smallImg"
                     :file-type="item.fileType"
                     :file-status="item.status"
@@ -50,7 +50,19 @@
         </div>
       </el-collapse-item>
     </el-collapse>
-    <detailModal ref="detail"></detailModal>
+    <detailModal ref="detail" :data-source="dataSource"></detailModal>
+    <el-dialog title="提示" :visible.sync="confirmVisible" width="30%">
+      <span>
+        是否执行该
+        <span v-if="executeType === 'I'">导入</span>
+        <span v-if="executeType === 'O'">导出</span>
+        项?
+      </span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="confirmVisible = false">取 消</el-button>
+        <el-button type="primary" @click="confirmClick">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -58,7 +70,7 @@
   import { getList } from '@/api/table'
   import VabImage from '@/components/VabImage'
   import DetailModal from './components/detailModal'
-  import { getBatchData, getFileDetail } from '@/api/getData'
+  import { getBatchData, getFileDetail, doExecute } from '@/api/getData'
 
   export default {
     name: 'Goods',
@@ -68,6 +80,10 @@
     },
     data() {
       return {
+        currentData: {},
+        confirmVisible: false,
+        executeType: '',
+        dataSource: '',
         activeName: '',
         queryForm: {
           pageNo: 1,
@@ -97,15 +113,48 @@
       handleBatchImport() {
         console.log('123')
       },
-      openClick(item) {
-        getFileDetail(item.dataSource).then((res) => {
-          console.log(res)
-        })
-        if (item) {
-          this.$refs['detail'].openModal(item)
-        } else {
-          this.$refs['detail'].openModal()
+      openClick(item, obj) {
+        this.executeType = obj.exchangeFlag
+        this.dataSource = item.dataSource
+        if (item.status === '2' && obj.exchangeFlag === 'I') {
+          getFileDetail(item.dataSource).then((res) => {
+            console.log(res)
+          })
+          if (item) {
+            this.$refs['detail'].openModal(item)
+          } else {
+            this.$refs['detail'].openModal()
+          }
+        } else if (item.status === '0') {
+          console.log('111')
+          this.confirmVisible = true
+          this.currentData = item
         }
+      },
+      confirmClick() {
+        const data = {
+          sysDate: '20200413',
+          idList: this.currentData.id,
+        }
+        doExecute(data).then((res) => {
+          if (res.data) {
+            this.confirmVisible = false
+            for (let i = 0; i < this.listData.length; i++) {
+              const fileList = this.listData[i].fileList
+              for (let j = 0; j < fileList.length; j++) {
+                if (fileList[j].id === this.currentData.id) {
+                  let interval = setInterval(() => {
+                    fileList[j].percent += 10
+                    if (fileList[j].percent === 100) {
+                      fileList[j].status = '2'
+                      clearInterval(interval)
+                    }
+                  }, 100)
+                }
+              }
+            }
+          }
+        })
       },
       handleSizeChange(val) {
         this.queryForm.pageSize = val
@@ -123,6 +172,14 @@
         this.listLoading = true
         getBatchData().then((res) => {
           this.listData = res.data
+          for (let i = 0; i < this.listData.length; i++) {
+            const fileList = this.listData[i].fileList
+            for (let j = 0; j < fileList.length; j++) {
+              if (fileList[j].status === '2') {
+                fileList[j].percent = 100
+              }
+            }
+          }
           this.activeName = this.listData[0].batchCode
         })
         const { data, totalCount } = await getList(this.queryForm)

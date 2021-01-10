@@ -3,14 +3,14 @@
     <el-row>
       <el-col :xs="20" :sm="20" :md="20" :lg="20" :xl="20">
         <el-dialog
-          :title="tableDetail.fileName"
+          :title="'测试'"
           :visible.sync="isVisible"
           width="80%"
           @close="close"
         >
-          <el-table :data="tableDetail.fileData">
+          <el-table :data="tableData" height="350px">
             <el-table-column
-              v-for="(item, index) in tableDetail.tableHeader"
+              v-for="(item, index) in tableHeader"
               :key="index"
               :property="item.key"
               :label="item.label"
@@ -19,10 +19,10 @@
           </el-table>
           <el-pagination
             background
-            :current-page="queryForm.pageNo"
-            :page-size="queryForm.pageSize"
+            :current-page="tableDetail.totalPage"
+            :page-size="tableDetail.size"
             :layout="layout"
-            :total="total"
+            :total="tableDetail.total"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
           ></el-pagination>
@@ -41,9 +41,16 @@
   import { getFileDetail } from '@/api/getData'
   export default {
     name: 'DetailModal',
+    props: {
+      dataSource: {
+        type: String,
+        default: '',
+      },
+    },
     data() {
       return {
-        tableDetail: {},
+        tableHeader: [],
+        tableDetail: [],
         tableData: [],
         fileData: {}, // 选中的文件的数据
         isVisible: false,
@@ -80,11 +87,13 @@
       async getData(params) {
         const res = await getHeaderNav()
         if (res) {
-          const tableDetail = res.data
-          console.log(res)
+          this.tableHeader = res.data
         }
-        getFileDetail(item.dataSource).then((res) => {
-          console.log(res)
+        getFileDetail(this.dataSource).then((data) => {
+          if (data) {
+            this.tableDetail = data.data
+            this.tableData = this.tableDetail.items
+          }
         })
       },
       openModal(item) {

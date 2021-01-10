@@ -138,7 +138,7 @@
                 <h4>处理数据</h4>
                 <i
                   :class="{
-                    'start-unfinished': initData.dealStatus === 2,
+                    'start-unfinished': initData.dealStatus !== 2,
                   }"
                   class="batchprocess-init-step2"
                 >
@@ -182,7 +182,7 @@
                 <i
                   :class="{
                     'start-unfinished':
-                      !initData || initData.exportStatus !== 0,
+                      !initData || initData.exportStatus !== 2,
                   }"
                   class="batchprocess-init-step2"
                 >
@@ -292,7 +292,12 @@
   import VabChart from '@/plugins/echarts'
   import { dependencies, devDependencies } from '../../../package.json'
   import { getList } from '@/api/changeLog'
-  import { getBatchNode } from '@/api/getData'
+  import {
+    getBatchNode,
+    getInitStatus,
+    getImportStatus,
+    getExportStatus,
+  } from '@/api/getData'
   export default {
     name: 'Index',
     components: {
@@ -433,26 +438,34 @@
         console.log(data)
         if (data.initStatus === 0) {
           this.initData.initStatus = 1
-          setTimeout(() => {
-            this.initData.initStatus = 2
-            this.initData.importStatus = 0
-            // 路由导航到详情展示页面
-            setTimeout(() => {
-              this.$router.push(`/mall/goodsList?sysDate=${this.sysDate}`)
-            }, 200)
-          }, 2000)
+          getInitStatus().then((res) => {
+            if (res.data) {
+              setTimeout(() => {
+                this.initData.initStatus = 2
+                this.initData.importStatus = 0
+                // 路由导航到详情展示页面
+                setTimeout(() => {
+                  this.$router.push(`/mall/goodsList?sysDate=${this.sysDate}`)
+                }, 200)
+              }, 2000)
+            }
+          })
         }
       },
       startImport(data) {
         if (data.importStatus === 0) {
           this.initData.importStatus = 1
-          setTimeout(() => {
-            this.initData.importStatus = 2
-            this.initData.dealStatus = 0
-            setTimeout(() => {
-              this.$router.push('/mall/goodsList')
-            }, 200)
-          }, 2000)
+          getImportStatus('20200413').then((res) => {
+            if (res.data) {
+              setTimeout(() => {
+                this.initData.importStatus = 2
+                this.initData.dealStatus = 0
+                setTimeout(() => {
+                  this.$router.push('/mall/goodsList')
+                }, 200)
+              }, 2000)
+            }
+          })
         }
       },
       startDeal(data) {
@@ -467,12 +480,16 @@
       startExport(data) {
         if (data.exportStatus === 0) {
           this.initData.exportStatus = 1
-          setTimeout(() => {
-            this.initData.exportStatus = 2
-            setTimeout(() => {
-              this.$router.push('/mall/goodsList')
-            }, 200)
-          }, 2000)
+          getExportStatus('20200413').then((res) => {
+            if (res.data) {
+              setTimeout(() => {
+                this.initData.exportStatus = 2
+                setTimeout(() => {
+                  this.$router.push('/mall/goodsList')
+                }, 200)
+              }, 2000)
+            }
+          })
         }
       },
       handleClick(e) {
