@@ -1,4 +1,4 @@
-const tableHeader = [
+const data = [
   {
     key: 'id',
     label: 'ID',
@@ -37,7 +37,7 @@ const tableHeader = [
 ]
 module.exports = [
   {
-    url: '/tableHeader/nav',
+    url: '/tableHeader/parameter',
     type: 'post',
     response() {
       return {

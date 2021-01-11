@@ -52,12 +52,29 @@ export function doExecute(params) {
   })
 }
 
-export function getStargazers(params) {
+export function getBatchTableData() {
   return request({
-    url:
-      'https://api.github.com/repos/chuzhixin/vue-admin-beautiful/stargazers',
+    url: URL_BASE + '/fileBatchDefinition',
     method: 'get',
-    params,
-    timeout: 10000,
+  })
+}
+
+export function getFileTableData() {
+  return request({
+    url: URL_BASE + '/fileDefinition',
+    method: 'get',
+  })
+}
+
+export function getParameterTableData() {
+  return request({
+    url: URL_BASE + '/parameter',
+    method: 'get',
+  })
+}
+export function getWildTableData() {
+  return request({
+    url: URL_BASE + '/wild',
+    method: 'get',
   })
 }

@@ -28,22 +28,14 @@
       </vab-query-form-right-panel>
     </vab-query-form>
 
-    <el-table
-      v-loading="listLoading"
-      :data="list"
-      :element-loading-text="elementLoadingText"
-      @selection-change="setSelectRows"
-    >
-      <el-table-column show-overflow-tooltip type="selection"></el-table-column>
+    <el-table :data="tableData" height="350px">
       <el-table-column
+        v-for="(item, index) in tableHeader"
+        :key="index"
+        :property="item.key"
+        :label="item.label"
+        :width="item.width"
         show-overflow-tooltip
-        prop="id"
-        label="id"
-      ></el-table-column>
-      <el-table-column
-        show-overflow-tooltip
-        prop="permission"
-        label="权限码"
       ></el-table-column>
       <el-table-column show-overflow-tooltip label="操作" width="200">
         <template #default="{ row }">
@@ -68,12 +60,17 @@
 <script>
   import { getList, doDelete } from '@/api/roleManagement'
   import Edit from './components/RoleManagementEdit'
+  import { getTableHeader } from '@/api/tableDetail'
+  import { getFileTableData } from '@/api/getData'
 
   export default {
     name: 'FileManagement',
     components: { Edit },
     data() {
       return {
+        tableHeader: [],
+        tableDetail: [],
+        tableData: [],
         list: null,
         listLoading: true,
         layout: 'total, sizes, prev, pager, next, jumper',
@@ -89,6 +86,7 @@
     },
     created() {
       this.fetchData()
+      this.getData()
     },
     methods: {
       setSelectRows(val) {
@@ -133,6 +131,18 @@
       queryData() {
         this.queryForm.pageNo = 1
         this.fetchData()
+      },
+      async getData() {
+        const res = await getTableHeader('file')
+        if (res) {
+          this.tableHeader = res.data
+        }
+        getFileTableData().then((data) => {
+          if (data) {
+            this.tableDetail = data.data
+            this.tableData = this.tableDetail.items
+          }
+        })
       },
       async fetchData() {
         this.listLoading = true

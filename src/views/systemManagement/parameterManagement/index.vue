@@ -29,39 +29,17 @@
 
     <el-table
       v-loading="listLoading"
-      :data="list"
       :element-loading-text="elementLoadingText"
-      @selection-change="setSelectRows"
+      :data="tableData"
+      height="350px"
     >
-      <el-table-column show-overflow-tooltip type="selection"></el-table-column>
       <el-table-column
+        v-for="(item, index) in tableHeader"
+        :key="index"
+        :property="item.key"
+        :label="item.label"
+        :width="item.width"
         show-overflow-tooltip
-        prop="id"
-        label="id"
-      ></el-table-column>
-      <el-table-column
-        show-overflow-tooltip
-        prop="username"
-        label="用户名"
-      ></el-table-column>
-      <el-table-column
-        show-overflow-tooltip
-        prop="email"
-        label="邮箱"
-      ></el-table-column>
-
-      <el-table-column show-overflow-tooltip label="权限">
-        <template #default="{ row }">
-          <el-tag v-for="(item, index) in row.permissions" :key="index">
-            {{ item }}
-          </el-tag>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        show-overflow-tooltip
-        prop="datatime"
-        label="修改时间"
       ></el-table-column>
       <el-table-column show-overflow-tooltip label="操作" width="200">
         <template #default="{ row }">
@@ -86,12 +64,17 @@
 <script>
   import { getList, doDelete } from '@/api/userManagement'
   import Edit from './components/ParameterManagementEdit'
+  import { getTableHeader } from '@/api/tableDetail'
+  import { getParameterTableData } from '@/api/getData'
 
   export default {
     name: 'ParameterManagement',
     components: { Edit },
     data() {
       return {
+        tableHeader: [],
+        tableDetail: [],
+        tableData: [],
         list: null,
         listLoading: true,
         layout: 'total, sizes, prev, pager, next, jumper',
@@ -107,6 +90,7 @@
     },
     created() {
       this.fetchData()
+      this.getData()
     },
     methods: {
       setSelectRows(val) {
@@ -151,6 +135,18 @@
       queryData() {
         this.queryForm.pageNo = 1
         this.fetchData()
+      },
+      async getData() {
+        const res = await getTableHeader('parameter')
+        if (res) {
+          this.tableHeader = res.data
+        }
+        getParameterTableData(this.dataSource).then((data) => {
+          if (data) {
+            this.tableDetail = data.data
+            this.tableData = this.tableDetail.items
+          }
+        })
       },
       async fetchData() {
         this.listLoading = true

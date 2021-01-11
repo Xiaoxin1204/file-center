@@ -50,7 +50,11 @@
         </div>
       </el-collapse-item>
     </el-collapse>
-    <detailModal ref="detail" :data-source="dataSource"></detailModal>
+    <detailModal
+      ref="detail"
+      :data-source="dataSource"
+      :file-name="fileName"
+    ></detailModal>
     <el-dialog title="提示" :visible.sync="confirmVisible" width="30%">
       <span>
         是否执行该
@@ -85,6 +89,7 @@
         executeType: '',
         dataSource: '',
         activeName: '',
+        fileName: '',
         queryForm: {
           pageNo: 1,
           pageSize: 20,
@@ -116,6 +121,7 @@
       openClick(item, obj) {
         this.executeType = obj.exchangeFlag
         this.dataSource = item.dataSource
+        this.fileName = item.fileName
         if (item.status === '2' && obj.exchangeFlag === 'I') {
           getFileDetail(item.dataSource).then((res) => {
             console.log(res)

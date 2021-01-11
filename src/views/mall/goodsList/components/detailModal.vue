@@ -37,12 +37,16 @@
 </template>
 
 <script>
-  import { getTableDetail, getHeaderNav } from '@/api/tableDetail'
+  import { getTableDetail, getTableHeader } from '@/api/tableDetail'
   import { getFileDetail } from '@/api/getData'
   export default {
     name: 'DetailModal',
     props: {
       dataSource: {
+        type: String,
+        default: '',
+      },
+      fileName: {
         type: String,
         default: '',
       },
@@ -85,7 +89,7 @@
         this.getData()
       },
       async getData(params) {
-        const res = await getHeaderNav()
+        const res = await getTableHeader('nav')
         if (res) {
           this.tableHeader = res.data
         }
