@@ -75,7 +75,7 @@
   import VabImage from '@/components/VabImage'
   import DetailModal from './components/detailModal'
   import { getBatchData, getFileDetail, doExecute } from '@/api/getData'
-  const { handleRandomImage } = require('../utils')
+  const { handleRandomImage } = require('../../../utils')
 
   export default {
     name: 'Goods',
