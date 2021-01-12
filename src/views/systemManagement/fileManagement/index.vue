@@ -28,7 +28,7 @@
       </vab-query-form-right-panel>
     </vab-query-form>
 
-    <el-table :data="tableData" height="350px">
+    <el-table :data="tableData" height="550">
       <el-table-column
         v-for="(item, index) in tableHeader"
         :key="index"
@@ -46,8 +46,8 @@
     </el-table>
     <el-pagination
       background
-      :current-page="queryForm.pageNo"
-      :page-size="queryForm.pageSize"
+      :current-page="totalPage"
+      :page-size="size"
       :layout="layout"
       :total="total"
       @size-change="handleSizeChange"
@@ -74,7 +74,9 @@
         list: null,
         listLoading: true,
         layout: 'total, sizes, prev, pager, next, jumper',
+        size: 0,
         total: 0,
+        totalPage: 0,
         selectRows: '',
         elementLoadingText: '正在加载...',
         queryForm: {
@@ -141,6 +143,9 @@
           if (data) {
             this.tableDetail = data.data
             this.tableData = this.tableDetail.items
+            this.total = this.tableDetail.total
+            this.size = this.tableDetail.size
+            this.totalPage = this.tableDetail.totalPage
           }
         })
       },

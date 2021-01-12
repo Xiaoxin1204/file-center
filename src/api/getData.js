@@ -1,6 +1,6 @@
 import request from 'axios'
 
-const URL_BASE = 'http://192.168.4.26:8090/datasource'
+const URL_BASE = 'http://localhost:8090/datasource'
 
 export function getBatchData() {
   return request({

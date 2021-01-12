@@ -1,10 +1,5 @@
 const data = [
   {
-    key: 'id',
-    label: '编号',
-    width: '150',
-  },
-  {
     key: 'address',
     label: '通讯地址',
     width: '150',

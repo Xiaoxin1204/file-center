@@ -1,23 +1,23 @@
 const data = [
   {
+    key: 'sequenceNo',
+    label: '顺序号',
+    width: '250',
+  },
+  {
     key: 'wildcardCode',
     label: '通配符',
-    width: '150',
+    width: '250',
   },
   {
     key: 'usedType',
-    label: '使用类型 0：值1：SQL语句 2：URL地址 3:自定义方法',
-    width: '150',
-  },
-  {
-    key: 'sequenceNo',
-    label: '顺序号',
-    width: '150',
+    label: '使用类型',
+    width: '250',
   },
   {
     key: 'typeValue',
     label: '类型具体值',
-    width: '150',
+    width: '800',
   },
 ]
 module.exports = [

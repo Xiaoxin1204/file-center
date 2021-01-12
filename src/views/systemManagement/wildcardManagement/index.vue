@@ -14,7 +14,7 @@
       v-loading="listLoading"
       :data="tableData"
       :element-loading-text="elementLoadingText"
-      height="350px"
+      height="550"
     >
       <el-table-column
         v-for="(item, index) in tableHeader"
@@ -31,7 +31,15 @@
         </template>
       </el-table-column>
     </el-table>
-
+    <el-pagination
+      background
+      :current-page="totalPage"
+      :page-size="size"
+      :layout="layout"
+      :total="total"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    ></el-pagination>
     <edit ref="edit" @fetch-data="fetchData"></edit>
   </div>
 </template>
@@ -52,6 +60,10 @@
         tableHeader: [],
         tableDetail: [],
         tableData: [],
+        layout: 'total, sizes, prev, pager, next, jumper',
+        size: 0,
+        total: 0,
+        totalPage: 0,
         defaultProps: {
           children: 'children',
           label: 'label',
@@ -96,6 +108,14 @@
           }
         }
       },
+      handleSizeChange(val) {
+        this.queryForm.pageSize = val
+        this.fetchData()
+      },
+      handleCurrentChange(val) {
+        this.queryForm.pageNo = val
+        this.fetchData()
+      },
       async getData() {
         const res = await getTableHeader('wild')
         if (res) {
@@ -105,6 +125,9 @@
           if (data) {
             this.tableDetail = data.data
             this.tableData = this.tableDetail.items
+            this.total = this.tableDetail.total
+            this.size = this.tableDetail.size
+            this.totalPage = this.tableDetail.totalPage
           }
         })
       },

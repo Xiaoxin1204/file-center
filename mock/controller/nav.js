@@ -1,10 +1,5 @@
 const data = [
   {
-    key: 'id',
-    label: '编号',
-    width: '350',
-  },
-  {
     key: 'sequenceNo',
     label: '当日净值排序',
     width: '150',
