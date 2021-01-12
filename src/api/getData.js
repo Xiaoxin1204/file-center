@@ -1,6 +1,6 @@
 import request from 'axios'
 
-const URL_BASE = 'http://192.168.4.26:8090/datasource'
+const URL_BASE = 'http://localhost:8090/datasource'
 
 export function getBatchData() {
   return request({
@@ -52,12 +52,29 @@ export function doExecute(params) {
   })
 }
 
-export function getStargazers(params) {
+export function getBatchTableData() {
   return request({
-    url:
-      'https://api.github.com/repos/chuzhixin/vue-admin-beautiful/stargazers',
+    url: URL_BASE + '/fileBatchDefinition',
     method: 'get',
-    params,
-    timeout: 10000,
+  })
+}
+
+export function getFileTableData() {
+  return request({
+    url: URL_BASE + '/fileDefinition',
+    method: 'get',
+  })
+}
+
+export function getParameterTableData() {
+  return request({
+    url: URL_BASE + '/parameter',
+    method: 'get',
+  })
+}
+export function getWildTableData() {
+  return request({
+    url: URL_BASE + '/wild',
+    method: 'get',
   })
 }

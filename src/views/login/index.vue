@@ -54,13 +54,17 @@
             <el-button
               :loading="loading"
               class="login-btn"
+              style="margin: 0 auto"
               type="primary"
               @click="handleLogin"
             >
               登录
             </el-button>
-            <router-link to="/register">
+            <router-link to="/register" style="float: left">
               <div style="margin-top: 20px">注册</div>
+            </router-link>
+            <router-link to="/register" style="float: right">
+              <div style="margin-top: 20px">手机号登陆</div>
             </router-link>
           </el-form>
         </div>

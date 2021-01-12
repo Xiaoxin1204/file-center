@@ -28,22 +28,14 @@
       </vab-query-form-right-panel>
     </vab-query-form>
 
-    <el-table
-      v-loading="listLoading"
-      :data="list"
-      :element-loading-text="elementLoadingText"
-      @selection-change="setSelectRows"
-    >
-      <el-table-column show-overflow-tooltip type="selection"></el-table-column>
+    <el-table :data="tableData" height="400">
       <el-table-column
+        v-for="(item, index) in tableHeader"
+        :key="index"
+        :property="item.key"
+        :label="item.label"
+        :width="item.width"
         show-overflow-tooltip
-        prop="id"
-        label="id"
-      ></el-table-column>
-      <el-table-column
-        show-overflow-tooltip
-        prop="permission"
-        label="权限码"
       ></el-table-column>
       <el-table-column show-overflow-tooltip label="操作" width="200">
         <template #default="{ row }">
@@ -54,8 +46,8 @@
     </el-table>
     <el-pagination
       background
-      :current-page="queryForm.pageNo"
-      :page-size="queryForm.pageSize"
+      :current-page="totalPage"
+      :page-size="size"
       :layout="layout"
       :total="total"
       @size-change="handleSizeChange"
@@ -68,16 +60,23 @@
 <script>
   import { getList, doDelete } from '@/api/roleManagement'
   import Edit from './components/batchManagementEdit'
+  import { getBatchTableData, getFileDetail } from '@/api/getData'
+  import { getTableHeader } from '@/api/tableDetail'
 
   export default {
     name: 'BatchManagement',
     components: { Edit },
     data() {
       return {
+        tableHeader: [],
+        tableDetail: [],
+        tableData: [],
         list: null,
         listLoading: true,
         layout: 'total, sizes, prev, pager, next, jumper',
+        size: 0,
         total: 0,
+        totalPage: 0,
         selectRows: '',
         elementLoadingText: '正在加载...',
         queryForm: {
@@ -89,6 +88,7 @@
     },
     created() {
       this.fetchData()
+      this.getData()
     },
     methods: {
       setSelectRows(val) {
@@ -133,6 +133,21 @@
       queryData() {
         this.queryForm.pageNo = 1
         this.fetchData()
+      },
+      async getData() {
+        const res = await getTableHeader('batch')
+        if (res) {
+          this.tableHeader = res.data
+        }
+        getBatchTableData().then((data) => {
+          if (data) {
+            this.tableDetail = data.data
+            this.tableData = this.tableDetail.items
+            this.total = this.tableDetail.total
+            this.size = this.tableDetail.size
+            this.totalPage = this.tableDetail.totalPage
+          }
+        })
       },
       async fetchData() {
         this.listLoading = true

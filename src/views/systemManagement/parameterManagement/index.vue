@@ -29,39 +29,17 @@
 
     <el-table
       v-loading="listLoading"
-      :data="list"
       :element-loading-text="elementLoadingText"
-      @selection-change="setSelectRows"
+      :data="tableData"
+      height="550"
     >
-      <el-table-column show-overflow-tooltip type="selection"></el-table-column>
       <el-table-column
+        v-for="(item, index) in tableHeader"
+        :key="index"
+        :property="item.key"
+        :label="item.label"
+        :width="item.width"
         show-overflow-tooltip
-        prop="id"
-        label="id"
-      ></el-table-column>
-      <el-table-column
-        show-overflow-tooltip
-        prop="username"
-        label="用户名"
-      ></el-table-column>
-      <el-table-column
-        show-overflow-tooltip
-        prop="email"
-        label="邮箱"
-      ></el-table-column>
-
-      <el-table-column show-overflow-tooltip label="权限">
-        <template #default="{ row }">
-          <el-tag v-for="(item, index) in row.permissions" :key="index">
-            {{ item }}
-          </el-tag>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        show-overflow-tooltip
-        prop="datatime"
-        label="修改时间"
       ></el-table-column>
       <el-table-column show-overflow-tooltip label="操作" width="200">
         <template #default="{ row }">
@@ -72,8 +50,8 @@
     </el-table>
     <el-pagination
       background
-      :current-page="queryForm.pageNo"
-      :page-size="queryForm.pageSize"
+      :current-page="totalPage"
+      :page-size="size"
       :layout="layout"
       :total="total"
       @size-change="handleSizeChange"
@@ -86,16 +64,23 @@
 <script>
   import { getList, doDelete } from '@/api/userManagement'
   import Edit from './components/ParameterManagementEdit'
+  import { getTableHeader } from '@/api/tableDetail'
+  import { getParameterTableData } from '@/api/getData'
 
   export default {
     name: 'ParameterManagement',
     components: { Edit },
     data() {
       return {
+        tableHeader: [],
+        tableDetail: [],
+        tableData: [],
         list: null,
         listLoading: true,
         layout: 'total, sizes, prev, pager, next, jumper',
+        size: 0,
         total: 0,
+        totalPage: 0,
         selectRows: '',
         elementLoadingText: '正在加载...',
         queryForm: {
@@ -107,6 +92,7 @@
     },
     created() {
       this.fetchData()
+      this.getData()
     },
     methods: {
       setSelectRows(val) {
@@ -151,6 +137,21 @@
       queryData() {
         this.queryForm.pageNo = 1
         this.fetchData()
+      },
+      async getData() {
+        const res = await getTableHeader('parameter')
+        if (res) {
+          this.tableHeader = res.data
+        }
+        getParameterTableData(this.dataSource).then((data) => {
+          if (data) {
+            this.tableDetail = data.data
+            this.tableData = this.tableDetail.items
+            this.total = this.tableDetail.total
+            this.size = this.tableDetail.size
+            this.totalPage = this.tableDetail.totalPage
+          }
+        })
       },
       async fetchData() {
         this.listLoading = true

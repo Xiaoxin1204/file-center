@@ -12,83 +12,18 @@
     </vab-query-form>
     <el-table
       v-loading="listLoading"
-      :data="list"
+      :data="tableData"
       :element-loading-text="elementLoadingText"
-      row-key="path"
-      border
-      default-expand-all
-      :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+      height="550"
     >
       <el-table-column
+        v-for="(item, index) in tableHeader"
+        :key="index"
+        :property="item.key"
+        :label="item.label"
+        :width="item.width"
         show-overflow-tooltip
-        prop="name"
-        label="name"
       ></el-table-column>
-      <el-table-column
-        show-overflow-tooltip
-        prop="path"
-        label="路径"
-      ></el-table-column>
-      <el-table-column show-overflow-tooltip label="是否隐藏">
-        <template #default="{ row }">
-          <span>
-            {{ row.hidden ? '是' : '否' }}
-          </span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="是否一直显示当前节点">
-        <template #default="{ row }">
-          <span>
-            {{ row.alwaysShow ? '是' : '否' }}
-          </span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        show-overflow-tooltip
-        prop="component"
-        label="vue文件路径"
-      ></el-table-column>
-      <el-table-column
-        show-overflow-tooltip
-        prop="redirect"
-        label="重定向"
-      ></el-table-column>
-      <el-table-column
-        show-overflow-tooltip
-        prop="meta.title"
-        label="标题"
-      ></el-table-column>
-      <el-table-column show-overflow-tooltip label="图标">
-        <template #default="{ row }">
-          <span v-if="row.meta">
-            <vab-icon
-              v-if="row.meta.icon"
-              :icon="['fas', row.meta.icon]"
-            ></vab-icon>
-          </span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="是否固定">
-        <template #default="{ row }">
-          <span v-if="row.meta">
-            {{ row.meta.affix ? '是' : '否' }}
-          </span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="是否无缓存">
-        <template #default="{ row }">
-          <span v-if="row.meta">
-            {{ row.meta.noKeepAlive ? '是' : '否' }}
-          </span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="badge">
-        <template #default="{ row }">
-          <span v-if="row.meta">
-            {{ row.meta.badge }}
-          </span>
-        </template>
-      </el-table-column>
       <el-table-column show-overflow-tooltip label="操作" width="200">
         <template #default="{ row }">
           <el-button type="text" @click="handleEdit(row)">编辑</el-button>
@@ -96,7 +31,15 @@
         </template>
       </el-table-column>
     </el-table>
-
+    <el-pagination
+      background
+      :current-page="totalPage"
+      :page-size="size"
+      :layout="layout"
+      :total="total"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    ></el-pagination>
     <edit ref="edit" @fetch-data="fetchData"></edit>
   </div>
 </template>
@@ -105,6 +48,8 @@
   import { getRouterList as getList } from '@/api/router'
   import { getTree, doDelete } from '@/api/menuManagement'
   import Edit from './components/MenuManagementEdit'
+  import { getTableHeader } from '@/api/tableDetail'
+  import { getWildTableData } from '@/api/getData'
 
   export default {
     name: 'WildcardManagement',
@@ -112,6 +57,13 @@
     data() {
       return {
         data: [],
+        tableHeader: [],
+        tableDetail: [],
+        tableData: [],
+        layout: 'total, sizes, prev, pager, next, jumper',
+        size: 0,
+        total: 0,
+        totalPage: 0,
         defaultProps: {
           children: 'children',
           label: 'label',
@@ -125,6 +77,7 @@
       const roleData = await getTree()
       this.data = roleData.data
       this.fetchData()
+      this.getData()
     },
     methods: {
       handleEdit(row) {
@@ -154,6 +107,29 @@
             return false
           }
         }
+      },
+      handleSizeChange(val) {
+        this.queryForm.pageSize = val
+        this.fetchData()
+      },
+      handleCurrentChange(val) {
+        this.queryForm.pageNo = val
+        this.fetchData()
+      },
+      async getData() {
+        const res = await getTableHeader('wild')
+        if (res) {
+          this.tableHeader = res.data
+        }
+        getWildTableData().then((data) => {
+          if (data) {
+            this.tableDetail = data.data
+            this.tableData = this.tableDetail.items
+            this.total = this.tableDetail.total
+            this.size = this.tableDetail.size
+            this.totalPage = this.tableDetail.totalPage
+          }
+        })
       },
       async fetchData() {
         this.listLoading = true
