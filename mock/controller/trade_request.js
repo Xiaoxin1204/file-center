@@ -1,10 +1,5 @@
 const data = [
   {
-    key: 'id',
-    label: '编号',
-    width: '150',
-  },
-  {
     key: 'appSheetSerialNo',
     label: '申请单编号',
     width: '150',

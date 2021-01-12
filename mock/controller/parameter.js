@@ -1,18 +1,13 @@
 const data = [
   {
-    key: 'id',
-    label: 'ID',
-    width: '150',
-  },
-  {
     key: 'code',
     label: 'code',
-    width: '150',
+    width: '200',
   },
   {
     key: 'name',
     label: '参数名',
-    width: '150',
+    width: '200',
   },
   {
     key: 'type',
@@ -22,17 +17,17 @@ const data = [
   {
     key: 'value',
     label: '参数值',
-    width: '150',
+    width: '250',
   },
   {
     key: 'valueDomain',
     label: '参数定义',
-    width: '150',
+    width: '350',
   },
   {
     key: 'description',
     label: '参数描述',
-    width: '150',
+    width: '300',
   },
 ]
 module.exports = [
