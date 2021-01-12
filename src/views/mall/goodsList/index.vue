@@ -75,7 +75,7 @@
   import VabImage from '@/components/VabImage'
   import DetailModal from './components/detailModal'
   import { getBatchData, getFileDetail, doExecute } from '@/api/getData'
-  const { handleRandomImage } = require('../../../utils')
+  import { handleRandomImage } from '../../../../mock/utils'
 
   export default {
     name: 'Goods',
@@ -133,7 +133,6 @@
             this.$refs['detail'].openModal()
           }
         } else if (item.status === '0') {
-          console.log('111')
           this.confirmVisible = true
           this.currentData = item
         }
@@ -184,7 +183,7 @@
             for (let j = 0; j < fileList.length; j++) {
               fileList[j].img = handleRandomImage(200, 200)
               fileList[j].smallImg = handleRandomImage(40, 40)
-
+              console.log(fileList[j])
               if (fileList[j].status === '2') {
                 fileList[j].percent = 100
               }

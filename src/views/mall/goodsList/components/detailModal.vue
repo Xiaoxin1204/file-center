@@ -3,7 +3,7 @@
     <el-row>
       <el-col :xs="20" :sm="20" :md="20" :lg="20" :xl="20">
         <el-dialog
-          :title="'测试'"
+          :title="fileName"
           :visible.sync="isVisible"
           width="80%"
           @close="close"
@@ -54,7 +54,6 @@
     data() {
       return {
         tableHeader: [],
-        tableDetail: [],
         tableData: [],
         fileData: {}, // 选中的文件的数据
         isVisible: false,
@@ -88,13 +87,14 @@
         this.queryForm.pageNo = 1
         this.getData()
       },
-      async getData(params) {
-        const res = await getTableHeader('nav')
+      async getData() {
+        const res = await getTableHeader(this.dataSource)
         if (res) {
           this.tableHeader = res.data
         }
         getFileDetail(this.dataSource).then((data) => {
           if (data) {
+            this.pageData = data.page
             this.tableDetail = data.data
             this.tableData = this.tableDetail.items
           }
@@ -103,7 +103,15 @@
       openModal(item) {
         this.isVisible = true
         this.fileData = Object.assign({}, item)
-        this.getData(item.id)
+        // switch (this.dataSource) {
+        //   case 'nav':
+        //     break;
+        //     case 'account_request':
+        //       break;
+        //
+        //   data = 'nav'
+        // } else if (t)
+        this.getData()
       },
       close() {
         this.isVisible = false

@@ -77,7 +77,7 @@ const data = [
 ]
 module.exports = [
   {
-    url: '/tableHeader/nav',
+    url: '/tableHeader/net_value_temp',
     type: 'post',
     response() {
       return {
