@@ -85,10 +85,10 @@
       },
       queryData() {
         this.queryForm.pageNo = 1
-        this.getData()
+        // this.getData()
       },
-      async getData() {
-        const res = await getTableHeader(this.dataSource)
+      async getData(data) {
+        const res = await getTableHeader(data)
         if (res) {
           this.tableHeader = res.data
         }
@@ -111,7 +111,7 @@
         //
         //   data = 'nav'
         // } else if (t)
-        this.getData()
+        this.getData(item.dataSource)
       },
       close() {
         this.isVisible = false
