@@ -75,6 +75,7 @@
   import VabImage from '@/components/VabImage'
   import DetailModal from './components/detailModal'
   import { getBatchData, getFileDetail, doExecute } from '@/api/getData'
+  const { handleRandomImage } = require('../utils')
 
   export default {
     name: 'Goods',
@@ -181,6 +182,9 @@
           for (let i = 0; i < this.listData.length; i++) {
             const fileList = this.listData[i].fileList
             for (let j = 0; j < fileList.length; j++) {
+              fileList[j].img = handleRandomImage(200, 200)
+              fileList[j].smallImg = handleRandomImage(40, 40)
+
               if (fileList[j].status === '2') {
                 fileList[j].percent = 100
               }
