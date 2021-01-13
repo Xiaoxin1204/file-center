@@ -50,6 +50,9 @@
         </div>
       </el-collapse-item>
     </el-collapse>
+    <div v-if="listData === null || listData === []" class="no-data">
+      今日为初始化 |或| 今日
+    </div>
     <detailModal
       ref="detail"
       :data-source="dataSource"
@@ -197,6 +200,15 @@
 </script>
 <style lang="scss" scoped>
   .goods-list-container {
+    .no-data {
+      width: 250px; /**宽度**/
+      height: 100px; /**高度**/
+      position: absolute; /**绝对定位**/
+      left: 50%; /**左边50%**/
+      top: 50%; /**顶部50%**/
+      margin-top: -50px; /**上移-50%**/
+      margin-left: -100px; /**左移-50%**/
+    }
     ::v-deep {
       .el-card__header {
         text-align: center;

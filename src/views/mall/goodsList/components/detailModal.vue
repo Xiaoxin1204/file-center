@@ -54,7 +54,7 @@
     data() {
       return {
         tableHeader: [],
-        tableDetail: [],
+        tableDetail: {},
         tableData: [],
         fileData: {}, // 选中的文件的数据
         isVisible: false,
